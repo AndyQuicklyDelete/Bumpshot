@@ -1,6 +1,6 @@
 import mss
-import pystray
-from pystray import Menu, MenuItem
+#import pystray
+#from pystray import Menu, MenuItem
 from PIL import Image, ImageGrab
 from datetime import datetime
 
@@ -8,6 +8,8 @@ import pygetwindow as gw
 import keyboard
 import pyautogui
 import os, sys, time
+
+from infi.systray import SysTrayIcon
 
 import configparser
 Config = configparser.ConfigParser()
@@ -17,23 +19,27 @@ desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 path = desktop + "\\ScreenShots"
 
 
-isExist = os.path.exists(path)
-if not isExist:
-    os.makedirs(path)
+def make_directory():
+    isExist = os.path.exists(path)
+    if not isExist:
+        os.makedirs(path)
 
     
 def exit_action(icon):
-    icon.stop()
+    #icon.stop()
     os._exit(1)
 
 
 def capture_screenshot():
 
-    isExist = os.path.exists(path)
-    if not isExist:
-        os.makedirs(path)
+    # isExist = os.path.exists(path)
+    # if not isExist:
+    #     os.makedirs(path)
 
     with mss.mss() as sct:
+
+        make_directory()
+
         fmt = '%Y-%m-%d_%H.%M.%S'
         now = datetime.now()
         current_time = now.strftime(fmt)
@@ -58,9 +64,11 @@ def capture_screenshot():
 
 def capture_area_screenshot():
 
-    isExist = os.path.exists(path)
-    if not isExist:
-        os.makedirs(path)
+    # isExist = os.path.exists(path)
+    # if not isExist:
+    #     os.makedirs(path)
+
+    make_directory()
 
     left_x, left_y = pyautogui.position()
     while True:
@@ -92,12 +100,16 @@ if __name__ == '__main__':
     keyboard.add_hotkey(str(screenshot), capture_screenshot)
     keyboard.add_hotkey(str(screenarea1), capture_area_screenshot)
     
-    image = Image.open("icon.ico")
+    # image = Image.open("icon.ico")
 
-    icon = pystray.Icon('Bumpshot')
-    icon.menu = Menu(
-        MenuItem('Close Bumpshot', lambda : exit_action(icon)),
-    )
-    icon.icon = image
-    icon.title = 'Bumpshot 1.0.7'
-    icon.run()
+    # icon = pystray.Icon('Bumpshot')
+    # icon.menu = Menu(
+    #     MenuItem('Close Bumpshot', lambda : exit_action(icon)),
+    # )
+    # icon.icon = image
+    # icon.title = 'Bumpshot 1.0.7'
+    # icon.run()
+
+    menu_options = ""
+    icon = SysTrayIcon("icon.ico", "Bumpshot 1.0.8", menu_options, on_quit=exit_action)
+    icon.start()
